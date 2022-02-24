@@ -6,7 +6,7 @@
 /*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 09:07:55 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/24 08:23:08 by qnguyen          ###   ########.fr       */
+/*   Updated: 2022/02/24 11:49:15 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,18 @@ int	read_input(char **word, char **color)
 		return (0);
 	printf("Color return: ");
 	scanf("%s", *color);
+	i = 0;
+	while ((*color)[i])
+	{
+		if ((*color)[i] != 'g' && (*color)[i] != 'y' && (*color)[i] != 's')
+		{
+			free(*color);
+			*color = (char *)ft_memalloc(sizeof(char) * 6);
+			printf("Invalid color. 'g' for  correct letter and position, 'y' for correct letter, wrong postion, 's' for letter doesn't exists.\nColor return: ");
+			scanf("%s", *color);
+		}
+		i++;
+	}
 	return (1);
 }
 

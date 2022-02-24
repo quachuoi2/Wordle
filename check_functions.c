@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_functions.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: conguyen <conguyen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 23:24:29 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/24 08:18:43 by qnguyen          ###   ########.fr       */
+/*   Updated: 2022/02/24 15:45:09 by conguyen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,18 @@ int		check_gsy(char *possible_word, char *input_word, char *color)
 	return (1);
 }
 
-void	check_word(char (*w_list)[TOTAL_WORDS + 1][6], char (*after_list)[TOTAL_WORDS + 1][6], char *word, char *color)
+void	check_word(char w_list[TOTAL_WORDS + 1][6], char after_list[TOTAL_WORDS + 1][6], char *word, char *color)
 {
 	int	i;
 	int	i2;
 
 	i = 0;
 	i2 = 0;
-	while ((*w_list)[i][0] != '\0')
+	while (w_list[i][0] != '\0')
 	{
-		if (check_gsy((*w_list)[i], word, color))
-			ft_strcpy((*after_list)[i2++], (*w_list)[i]);
+		if (check_gsy(w_list[i], word, color))
+			ft_strcpy(after_list[i2++], w_list[i]);
 		i++;
 	}
-	(*after_list)[i2][0] = '\0';
+	after_list[i2][0] = '\0';
 }

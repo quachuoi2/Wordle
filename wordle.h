@@ -6,7 +6,7 @@
 /*   By: conguyen <conguyen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 08:36:25 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/24 14:50:20 by conguyen         ###   ########.fr       */
+/*   Updated: 2022/02/24 15:43:25 by conguyen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_win
 
 int		get_next_line(const int fd, char **line);
 int		duplicate(char *s, char c);
-void	check_word(char (*w_list)[TOTAL_WORDS + 1][6], char (*after_list)[TOTAL_WORDS + 1][6], char *word, char *color);
+void	check_word(char w_list[TOTAL_WORDS + 1][6], char after_list[TOTAL_WORDS + 1][6], char *word, char *color);
 int		initializer(char **word, char **color);
 void	freer(char **word, char **color);
 

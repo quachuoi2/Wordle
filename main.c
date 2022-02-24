@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: conguyen <conguyen@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 09:07:55 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/24 15:35:12 by conguyen         ###   ########.fr       */
+/*   Updated: 2022/02/24 17:12:18 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	restart_prog(t_win *win)
 	refresh_window(*win);
 }
 
-int	check_color(t_win *win, char* word, char *color, char w_list[12973][6], char after_list[12973][6])
+int	check_color(t_win *win, char *word, char *color, char w_list[12973][6], char after_list[12973][6])
 {
 	int	color_check;
 	int	i;
@@ -54,27 +54,14 @@ int	check_color(t_win *win, char* word, char *color, char w_list[12973][6], char
 		mvwgetstr((*win).win_input, 1, 14, color);
 		wclear((*win).win_input);
 		color_check = check_color_input(color);
-		if (color[0] == 33 && color[1] == 113) /*type !q to quit*/
-		{
-			clear_window(*win);
-			endwin();
-			exit(0);
-		}
-		if (color[0] == 33 && color[1] == 114) /*type !r to restart*/
-		{
+		if (color[0] == '!' && color[1] == 'q') /*type !q to quit*/
+			exit_bundle(win, word, color);
+		else if (color[0] == '!' && color[1] == 'r') /*type !r to restart*/
 			return (1);
-			break ;
-		}
 		else if (strlen(color) != 5) /*Check that color is 5 char long*/
-		{
-			mvwprintw((*win).win_err, 0, 1,"Color needs to be 5 characters long!");
-			wrefresh((*win).win_err);
-		}
+			print_ui(win, "Color needs to be 5 characters long!");
 		else if(color_check == 0) /*Check that color only has 'g', 'y' or 's' chars*/
-		{
-			mvwprintw((*win).win_err, 0, 1,"Incorrect input! Accepted char: 'g', 'y' and 's'");
-			wrefresh((*win).win_err);
-		}
+			print_ui(win, "Incorrect input! Accepted char: 'g', 'y' and 's'");
 		else
 		{
 			wclear((*win).win_info);
@@ -86,12 +73,10 @@ int	check_color(t_win *win, char* word, char *color, char w_list[12973][6], char
 			while (after_list[i][0] != '\0') /*Print suggested words to info window*/
 			{
 				ft_strcpy(w_list[i], after_list[i]);
-				mvwprintw((*win).win_info, column++, row, "%s", after_list[i]);
-				if (i == 70)
-				{
+				if (i < 71)
+					mvwprintw((*win).win_info, column++, row, "%s", after_list[i]);
+				else if (i > 70)
 					mvwprintw((*win).win_info, column++, row, ".....");
-					break ;
-				}
 				if (i == count - 1)
 				{
 					column = 1;
@@ -137,9 +122,9 @@ int	main(void)
 		wrefresh(win.win_input);
 		mvwgetstr(win.win_input, 1, 13, word);
 		wclear(win.win_input);
-		if (word[0] == 33 && word[1] == 113) /*type !q to quit*/
-			break ;
-		else if (word[0] == 33 && word[1] == 114) /*type !r to restart*/
+		if (word[0] == '!' && word[1] == 'q') /*type !q to quit*/
+			exit_bundle(&win, word, color);
+		else if (word[0] == '!' && word[1] == 'r') /*type !r to restart*/
 		{
 			guess = 1;
 			restart_prog(&win);
@@ -147,15 +132,9 @@ int	main(void)
 			w_list[TOTAL_WORDS][0] = '\0';
 		}
 		else if (guess == 7) /*Check if 6 guesses has been made*/
-		{
-			mvwprintw(win.win_err, 0, 1,"6 Guesses has been made!");
-			wrefresh(win.win_err);
-		}
-		else if (strlen(word) != 5) /*Check that word is 5 char long*/
-		{
-			mvwprintw(win.win_err, 0, 1,"Word needs to be 5 characters long!");
-			wrefresh(win.win_err);
-		}
+			print_ui(&win, "6 Guesses has been made!");
+		else if (word[5] != '\0' || strlen(word) < 5) /*Check that word is 5 char long*/
+			print_ui(&win, "Word needs to be 5 characters long!");
 		else
 		{
 			add_word(guess, win, word); /*Prtins word to main window*/
@@ -177,8 +156,5 @@ int	main(void)
 			}
 		}
 	}
-	clear_window(win);
-	endwin();
-	freer(&word, &color);
 	return (0);
 }

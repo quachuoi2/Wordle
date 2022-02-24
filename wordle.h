@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wordle.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: conguyen <conguyen@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 08:36:25 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/24 15:43:25 by conguyen         ###   ########.fr       */
+/*   Updated: 2022/02/24 16:57:57 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <stdio.h>
 # include <stdarg.h>
 # include <ncurses.h>
-# include <string.h> 
+# include <string.h>
 
 typedef struct s_win
 {
@@ -38,10 +38,13 @@ typedef struct s_win
 }	t_win;
 
 int		get_next_line(const int fd, char **line);
+/* utilities.c */
 int		duplicate(char *s, char c);
 void	check_word(char w_list[TOTAL_WORDS + 1][6], char after_list[TOTAL_WORDS + 1][6], char *word, char *color);
 int		initializer(char **word, char **color);
 void	freer(char **word, char **color);
+void	print_ui(t_win *win, char *s);
+void	exit_bundle(t_win *win, char *word, char *color);
 
 /*window.c*/
 

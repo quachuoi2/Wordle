@@ -6,7 +6,7 @@
 /*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 23:20:11 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/24 06:52:04 by qnguyen          ###   ########.fr       */
+/*   Updated: 2022/02/24 16:57:51 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,18 @@ void	freer(char **word, char **color)
 		free(*word);
 		free(*color);
 	}
+}
+
+void	print_ui(t_win *win, char *s)
+{
+	mvwprintw((*win).win_err, 0, 1, s);
+	wrefresh((*win).win_err);
+}
+
+void	exit_bundle(t_win *win, char *word, char *color)
+{
+	clear_window(*win);
+	endwin();
+	freer(&word, &color);
+	exit(0);
 }

@@ -3,18 +3,18 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+         #
+#    By: conguyen <conguyen@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/02/23 08:33:35 by qnguyen           #+#    #+#              #
-#    Updated: 2022/02/24 08:26:08 by qnguyen          ###   ########.fr        #
+#    Updated: 2022/02/24 14:51:36 by conguyen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = wordle
-SRC = get_next_line.c main.c utilities.c check_functions.c
+SRC = get_next_line.c main.c utilities.c check_functions.c window.c
 
 all: libft.a
-	@gcc -g $(SRC) -Llibft/ -lft -Ilibft/ #-o wordle
+	@gcc -g $(SRC) -Llibft/ -lft -Ilibft/ -lncurses #-o wordle
 
 libft.a:
 	make -C ./libft/

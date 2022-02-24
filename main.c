@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
+/*   By: conguyen <conguyen@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 09:07:55 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/24 11:49:15 by qnguyen          ###   ########.fr       */
+/*   Updated: 2022/02/24 14:49:19 by conguyen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,34 +29,6 @@ void	store_words(char (*w_list)[TOTAL_WORDS + 1][6])
 	close(fd);
 }
 
-int	read_input(char **word, char **color)
-{
-	char	i;
-
-	freer(word, color);
-	if (!initializer(word, color))
-		return (0);
-	printf("---type '0' to stop---\nWord input: ");
-	scanf("%s", *word);
-	if ((*word)[0] == '0')
-		return (0);
-	printf("Color return: ");
-	scanf("%s", *color);
-	i = 0;
-	while ((*color)[i])
-	{
-		if ((*color)[i] != 'g' && (*color)[i] != 'y' && (*color)[i] != 's')
-		{
-			free(*color);
-			*color = (char *)ft_memalloc(sizeof(char) * 6);
-			printf("Invalid color. 'g' for  correct letter and position, 'y' for correct letter, wrong postion, 's' for letter doesn't exists.\nColor return: ");
-			scanf("%s", *color);
-		}
-		i++;
-	}
-	return (1);
-}
-
 int	main(void)
 {
 	char	w_list[TOTAL_WORDS + 1][6];
@@ -64,23 +36,145 @@ int	main(void)
 	char	*word;
 	char	*color;
 	int		i;
+	int		guess;
+	int		color_check;
+	t_win	win;
+	int		count;
+	int		column;
+	int		row;
+	int		restart_check;
+
+	initscr(); /*initiate ncurses window*/
+	start_color(); /*start ncurses colors*/
+	initiate_colors();
+	initialize_window(&win);
+	initialize_help_box(win);
+	refresh_window(win);
+	cbreak();
 
 	store_words(&w_list);
 	w_list[TOTAL_WORDS][0] = '\0';
 	word = NULL;
 	color = NULL;
-	while (read_input(&word, &color))
+	guess = 1;
+	count = 18;
+	if (!initializer(&word, &color))
+		return (0);
+	while (1)
 	{
-		check_word(&w_list, &after_list, word, color);
-		i = 0;
-		while (after_list[i][0] != '\0')
+		mvwprintw(win.win_input, 1, 1, "Enter word: ");
+		wrefresh(win.win_input);
+		mvwgetstr(win.win_input, 1, 13, word);
+		wclear(win.win_input);
+		box(win.win_input, 0, 0);
+		if (word[0] == 33 && word[1] == 113) /*type !q to quit*/
+			break ;
+		else if (word[0] == 33 && word[1] == 114) /*type !r to restart*/
 		{
-			ft_strcpy(w_list[i], after_list[i]);
-			printf("%s\n", after_list[i]);
-			i++;
+			clear_window(win);
+			initialize_window(&win);
+			initialize_help_box(win);
+			refresh_window(win);
+			guess = 1;
+			count = 18;
+			store_words(&w_list);
+			w_list[TOTAL_WORDS][0] = '\0';
 		}
-		w_list[i][0] = '\0';
+		else if (strlen(word) != 5) /*Check that word is 5 char long*/
+		{
+			mvwprintw(win.win_err, 0, 1,"Word needs to be 5 characters long!");
+			wrefresh(win.win_err);
+		}
+		else
+		{
+			add_word(guess, win, word);
+			refresh_window(win);
+			color_check = 0;
+			while (1)
+			{
+				mvwprintw(win.win_input, 1, 1, "Enter color: ");
+				wrefresh(win.win_input);
+				mvwgetstr(win.win_input, 1, 14, color);
+				wclear(win.win_input);
+				box(win.win_input, 0, 0);
+				color_check = check_color_input(color);
+				if (color[0] == 33 && color[1] == 113) /*type !q to quit*/
+				{
+					clear_window(win);
+					endwin();
+					exit(0);
+				}
+				if (color[0] == 33 && color[1] == 114) /*type !r to restart*/
+				{
+					restart_check = 1;
+					break ;
+				}
+				else if (strlen(color) != 5) /*Check that color is 5 char long*/
+				{
+					mvwprintw(win.win_err, 0, 1,"Color needs to be 5 characters long!");
+					wrefresh(win.win_err);
+				}
+				else if(color_check == 0) /*Check that color only has 'g', 'y' or 's' chars*/
+				{
+					mvwprintw(win.win_err, 0, 1,"Incorrect input! accepted char: 'g', 'y' and 's'");
+					wrefresh(win.win_err);
+				}
+				else
+				{
+					wclear(win.win_info);
+					box(win.win_info, 0, 0);
+					check_word(&w_list, &after_list, word, color);
+					i = 0;
+					column = 1;
+					row = 1;
+					while (after_list[i][0] != '\0') /*Print suggested words to info window*/
+					{
+						ft_strcpy(w_list[i], after_list[i]);
+						mvwprintw(win.win_info, column++, row, "%s", after_list[i]);
+						if (i == 70)
+						{
+							mvwprintw(win.win_info, column++, row, ".....");
+							break ;
+						}
+						if (i == count - 1)
+						{
+							column = 1;
+							row = row + 7;
+							count = count + 18;
+						}
+						i++;
+					}
+					w_list[i][0] = '\0';
+					wrefresh(win.win_info);
+					wclear(win.win_err);
+					wrefresh(win.win_err);
+					break ;
+				}
+			}
+			if (restart_check == 1) /*restart, if !r was typed in color input*/
+			{
+				restart_check = 0;
+				clear_window(win);
+				initialize_window(&win);
+				initialize_help_box(win);
+				refresh_window(win);
+				guess = 1;
+				count = 18;
+				store_words(&w_list);
+				w_list[TOTAL_WORDS][0] = '\0';
+			}
+			else
+			{
+				add_color(guess, win, color, word);
+				refresh_window(win);
+				wclear(win.win_input);
+				box(win.win_input, 0, 0);
+				guess++;
+			}
+		}
 	}
+	clear_window(win);
+	endwin();
 	freer(&word, &color);
 	return (0);
 }

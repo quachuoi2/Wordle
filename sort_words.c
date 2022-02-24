@@ -6,7 +6,7 @@
 /*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 08:11:09 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/23 09:12:34 by qnguyen          ###   ########.fr       */
+/*   Updated: 2022/02/24 03:54:27 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	main(void)
 	char	*s;
 	char	w_list[12972][6];
 
-	fd = open("l_o_poss", O_RDONLY);
+	fd = open("list_of_possibilities", O_RDONLY);
 	i = 0;
 	while (get_next_line(fd, &s))
 	{
@@ -38,7 +38,7 @@ int	main(void)
 		free(s);
 		i++;
 	}
-	fd = open("l_o_words", O_RDONLY);
+	fd = open("list_of_actual_words", O_RDONLY);
 	while (get_next_line(fd, &s))
 	{
 		ft_strcpy(w_list[i], s);

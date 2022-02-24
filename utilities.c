@@ -1,21 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   utilities.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/12/03 14:28:33 by qnguyen           #+#    #+#             */
-/*   Updated: 2021/12/20 05:59:18 by qnguyen          ###   ########.fr       */
+/*   Created: 2022/02/23 23:20:11 by qnguyen           #+#    #+#             */
+/*   Updated: 2022/02/24 06:52:04 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# define FD_SIZE 4096
-# define BUFF_SIZE 42
-# include "libft.h"
+#include "wordle.h"
 
-int	get_next_line(const int fd, char **line);
+int		duplicate(char *s, char c)
+{
+	while (*s)
+	{
+		if (*s == c)
+			return (1);
+		s++;
+	}
+	return (0);
+}
 
-#endif
+int		initializer(char **word, char **color)
+{
+	*word = ft_memalloc(sizeof(char) * 6);
+	*color = ft_memalloc(sizeof(char) * 6);
+	if (!*word || !*color)
+		return (0);
+	return (1);
+}
+
+void	freer(char **word, char **color)
+{
+	if (word || color)
+	{
+		free(*word);
+		free(*color);
+	}
+}

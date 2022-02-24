@@ -6,11 +6,11 @@
 /*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/05 15:12:24 by qnguyen           #+#    #+#             */
-/*   Updated: 2021/12/20 05:57:45 by qnguyen          ###   ########.fr       */
+/*   Updated: 2022/02/24 07:45:11 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "wordle.h"
 
 static int	append_new_line(char **tmp, char (*buf)[BUFF_SIZE + 1], char **line)
 {

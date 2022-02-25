@@ -6,7 +6,7 @@
 /*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 09:07:55 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/24 11:49:15 by qnguyen          ###   ########.fr       */
+/*   Updated: 2022/02/25 05:43:29 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	store_words(char (*w_list)[TOTAL_WORDS + 1][6])
 	int		i;
 	char	*s;
 
-	fd = open("list_of_all", O_RDONLY);
+	fd = open("list_of_actual_words", O_RDONLY);
 	i = 0;
 	while (get_next_line(fd, &s))
 	{
@@ -31,10 +31,10 @@ void	store_words(char (*w_list)[TOTAL_WORDS + 1][6])
 
 int	read_input(char **word, char **color)
 {
-	char	i;
 
-	freer(word, color);
-	if (!initializer(word, color))
+	if (*word || *color)
+		freer(word, color);
+	if (!word_color_mallocs(word, color))
 		return (0);
 	printf("---type '0' to stop---\nWord input: ");
 	scanf("%s", *word);
@@ -42,18 +42,9 @@ int	read_input(char **word, char **color)
 		return (0);
 	printf("Color return: ");
 	scanf("%s", *color);
-	i = 0;
-	while ((*color)[i])
-	{
-		if ((*color)[i] != 'g' && (*color)[i] != 'y' && (*color)[i] != 's')
-		{
-			free(*color);
-			*color = (char *)ft_memalloc(sizeof(char) * 6);
-			printf("Invalid color. 'g' for  correct letter and position, 'y' for correct letter, wrong postion, 's' for letter doesn't exists.\nColor return: ");
-			scanf("%s", *color);
-		}
-		i++;
-	}
+	if (check_color(*color) == 0)
+		return (0);
+	color_to_num(*color);
 	return (1);
 }
 
@@ -61,25 +52,39 @@ int	main(void)
 {
 	char	w_list[TOTAL_WORDS + 1][6];
 	char	after_list[TOTAL_WORDS + 1][6];
+	double	value_list[TOTAL_WORDS + 1];
 	char	*word;
 	char	*color;
 	int		i;
+	int		choice;
+	int		count_down;
 
+	initializer(&w_list);
+	initializer(&after_list);
+	num_initializer(&value_list);
 	store_words(&w_list);
-	w_list[TOTAL_WORDS][0] = '\0';
 	word = NULL;
 	color = NULL;
-	while (read_input(&word, &color))
+	printf("%stry %ssalet%s as the first guess if you will%s\n", KBLU, KYEL, KBLU, KNRM);
+	count_down = 6;
+	while (count_down > 0 && read_input(&word, &color))
 	{
 		check_word(&w_list, &after_list, word, color);
-		i = 0;
-		while (after_list[i][0] != '\0')
+		choice = find_word(&after_list, &value_list, color);
+		if (after_list[choice][0] == '\0')
 		{
-			ft_strcpy(w_list[i], after_list[i]);
-			printf("%s\n", after_list[i]);
-			i++;
+			printf("%sOh what?? Was the input correct?\nIf so, whoops my bad :D%s\n", KBLU, KNRM);
+			break ;
 		}
+		else if (choice < 2)
+			printf("%sIt's probably %s%s%s or %s%s%s\nTry %s%s%s\n", KBLU, KYEL, after_list[0], KBLU, KYEL, after_list[1], KBLU, KYEL, after_list[choice], KNRM);
+		else
+			printf("%sPerhaps try %s%s%s\n", KBLU, KYEL, after_list[choice], KNRM);
+		i = -1;
+		while (after_list[++i][0] != '\0')
+			ft_strcpy(w_list[i], after_list[i]);
 		w_list[i][0] = '\0';
+		count_down--;
 	}
 	freer(&word, &color);
 	return (0);

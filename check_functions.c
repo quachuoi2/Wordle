@@ -6,7 +6,7 @@
 /*   By: qnguyen <qnguyen@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 23:24:29 by qnguyen           #+#    #+#             */
-/*   Updated: 2022/02/25 05:45:07 by qnguyen          ###   ########.fr       */
+/*   Updated: 2022/03/02 11:52:31 by qnguyen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,15 @@ int	check_gsy(char *possible_word, char *input_word, char *color)
 					return (0);
 			if (color[i] == 3)
 			{
-				if (possible_dup[i2] == input_word[i2])
-					return (0);
-				if (possible_dup[i2] == input_word[i] && i != i2 && present == 0)
+				if (possible_dup[i2] == input_word[i])
 				{
-					present = 1;
-					possible_dup[i2] = -1;
+					if (i == i2)
+						return (0);
+					if (present == 0)
+					{
+						present = 1;
+						possible_dup[i2] = -1;
+					}
 				}
 			}
 			i2++;

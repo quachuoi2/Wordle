@@ -1,7 +1,9 @@
 # Wordle
 Hive Helsinki's Rush>Wordle project
 
-`make` to compile the program
+`make` to compile the software
+
+`bash wordle` to run
 
 As there is no integration with the actual game itself, you must manually type the words into the game and the program.
 
